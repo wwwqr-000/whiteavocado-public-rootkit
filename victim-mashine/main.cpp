@@ -3,25 +3,10 @@
 #include <vector>
 #include <thread>
 
-HMODULE DLL = LoadLibraryExW(L"data/whiteavocado64.dll", nullptr, 0);
-using TS = bool (__cdecl*)(const char*, int, int, int, int);
-using MB = void (__cdecl*)(const char*, const char*, const char*, const char*, std::string&);
-using QS = bool (__cdecl*)(std::string, std::string&);
-using DT = void (__cdecl*)(const char*, int, int, int, int, int, int, int, int, int, int, int);
-TS const takeScreenshot = reinterpret_cast<TS>(GetProcAddress(DLL, "takeScreenshot"));
-MB const msgBox = reinterpret_cast<MB>(GetProcAddress(DLL, "msgBox"));
-QS const quietShell = reinterpret_cast<QS>(GetProcAddress(DLL, "quietShell"));
-DT const drawTxt = reinterpret_cast<DT>(GetProcAddress(DLL, "drawTxt"));
+#include "classes/dll_setup.hpp"
 
 std::vector<std::thread> threads;
 
-void cls() {
-    system("cls");
-}
-
-void wait() {
-    system("set /p end=");
-}
 
 void handleTakeScreenshot() {
     std::cout << "Testing 'handleTakeScreenshot'\n";
@@ -46,7 +31,58 @@ void handleQuietShell() {
 void handleDrawTxt() {
     std::cout << "Testing 'handleDrawTxt'\n";
     drawTxt("Test123", 10, 10, 110, 110, 0, 255, 0, 0, 0, 0, 24);
-    std::cout << "\tOK -> drawn text 'Test123'\n";
+    std::cout << "\tOK -> drawn text 'Test123'\n\n";
+}
+
+void handleShowInputDevices() {
+    std::cout << "Testing 'handleShowInputDevices'\n";
+    showInputDevices();
+    std::cout << "\tOK -> showed list of input devices\n\n";
+}
+
+void handleBeginRecording() {
+    std::cout << "Testing 'handleBeginRecording'\n";
+    int deviceIndex = 0;
+    beginRecording("rec_test", deviceIndex, false);
+    std::cout << "\tOK -> started recording 'rec_test'\n\n";
+}
+
+void handleEndRecording() {
+    std::cout << "Testing 'handleEndRecording'\n";
+    endRecording("rec_test");
+    std::cout << "\tOK -> stopped recording 'rec_test'\n\n";
+}
+
+void handleSaveRecording() {
+    std::cout << "Testing 'handleSaveRecording'\n";
+    saveRecording("rec_test", "rec-test.wav");
+    std::cout << "\tOK -> saved recording 'rec_test' to 'rec-test.wav'\n\n";
+}
+
+void handleGetUsername() {
+    std::cout << "Testing 'handleGetUsername'\n";
+    std::cout << "\tOK -> result '" << getUsername() << "'\n\n";
+}
+
+void handleGetSelfName() {
+    std::cout << "Testing 'handleGetSelfName'\n";
+    std::cout << "\tOK -> result '" << getSelfName() << "'\n\n";
+}
+
+void handleBeep() {
+    std::cout << "Testing 'handleBeep'\n";
+    beep("normal");
+    Sleep(1000);
+    beep("strong");
+    Sleep(1000);
+    beep("crit");
+    std::cout << "\tOK -> played beep test.\n\n";
+}
+
+void handleEmulateKey() {
+    std::cout << "Testing 'handleEmulateKey'\n";
+    emulateKey("win", 10);
+    std::cout << "\tOK -> pressed 'win' key.\n\n";
 }
 
 int main() {
@@ -55,6 +91,14 @@ int main() {
 
     handleTakeScreenshot();
     handleQuietShell();
-    handleDrawTxt();
+    handleShowInputDevices();
+    handleBeginRecording();
+    Sleep(5000);
+    handleEndRecording();
+    handleSaveRecording();
+    handleGetUsername();
+    handleGetSelfName();
+    handleBeep();
+    handleEmulateKey();
     return 0;
 }
