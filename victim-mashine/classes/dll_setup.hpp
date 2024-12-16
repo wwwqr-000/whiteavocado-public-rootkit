@@ -11,15 +11,23 @@ using OV = void (__cdecl*)();
 using GUN = const char* (__cdecl*)();
 using EK = void (__cdecl*)(const char*, int);
 
-TS const takeScreenshot = reinterpret_cast<TS>(GetProcAddress(DLL, "takeScreenshot"));
-MB const msgBox = reinterpret_cast<MB>(GetProcAddress(DLL, "msgBox"));
-QS const quietShell = reinterpret_cast<QS>(GetProcAddress(DLL, "quietShell"));
-DT const drawTxt = reinterpret_cast<DT>(GetProcAddress(DLL, "drawTxt"));
-BRC const beginRecording = reinterpret_cast<BRC>(GetProcAddress(DLL, "startRecording"));
-ERC const endRecording = reinterpret_cast<ERC>(GetProcAddress(DLL, "stopRecording"));
-SRC const saveRecording = reinterpret_cast<SRC>(GetProcAddress(DLL, "saveRecording"));
-OV const showInputDevices = reinterpret_cast<OV>(GetProcAddress(DLL, "showInputDevices"));
-GUN const getUsername = reinterpret_cast<GUN>(GetProcAddress(DLL, "getUName"));
-GUN const getSelfName = reinterpret_cast<GUN>(GetProcAddress(DLL, "getSelfName"));
-ERC const beep = reinterpret_cast<ERC>(GetProcAddress(DLL, "beep"));
-EK const emulateKey = reinterpret_cast<EK>(GetProcAddress(DLL, "key"));
+template<typename T>
+T initExternalMethod(const std::string& methodName) {
+    T res = reinterpret_cast<T>(GetProcAddress(DLL, methodName.c_str()));
+    if (!res) { return nullptr; }
+    return res;
+}
+
+
+TS const takeScreenshot = initExternalMethod<TS>("takeScreenshot");
+MB const msgBox = initExternalMethod<MB>("msgBox");
+QS const quietShell = initExternalMethod<QS>("quietShell");
+DT const drawTxt = initExternalMethod<DT>("drawTxt");
+BRC const beginRecording = initExternalMethod<BRC>("startRecording");
+ERC const endRecording = initExternalMethod<ERC>("stopRecording");
+SRC const saveRecording = initExternalMethod<SRC>("saveRecording");
+OV const showInputDevices = initExternalMethod<OV>("showInputDevices");
+GUN const getUsername = initExternalMethod<GUN>("getUName");
+GUN const getSelfName = initExternalMethod<GUN>("getSelfName");
+ERC const beep = initExternalMethod<ERC>("beep");
+EK const emulateKey = initExternalMethod<EK>("key");
